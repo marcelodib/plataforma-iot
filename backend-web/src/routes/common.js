@@ -19,8 +19,7 @@ module.exports = function (app) {
         }
         else{
             /*Renderiza tela de index do sistema.*/
-            res.render("./common/index");
-            return;
+            return res.render("./common/index");
         }
     });
 /*============================================================================*/
