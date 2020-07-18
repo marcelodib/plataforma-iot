@@ -41,13 +41,13 @@ module.exports = function (app) {
     function (req, res) {
         /*Chamada da função que valida os dados da requisição.*/
         const errors = validationResult(req)
-        /*Verificação se os parâmetros não apresentam inconsistências.*/            
+        /*Verificação se os parâmetros apresentam inconsistências.*/            
         if (!errors.isEmpty()) {
-            /*Envio da respostas.*/
+            /*Envio da resposta.*/
             return res.status(400).send({status: "error", msg: errors.array()});
         }
         else {
-            /*Chamada do controller parar realizar a sign in do usuário e criação de sessão.*/
+            /*Chamada do controller parar realizar a autenticação do usuário e a criação de sessão.*/
             app.src.controllers.sign.signIn(app, req, res);
         }
     });
@@ -91,9 +91,9 @@ module.exports = function (app) {
     function (req, res) {
         /*Chamada da função que valida os dados da requisição.*/
         const errors = validationResult(req)
-        /*Verificação se os parâmetros não apresentam inconsistências.*/            
+        /*Verificação se os parâmetros apresentam inconsistências.*/            
         if (!errors.isEmpty()) {
-            /*Envio da respostas.*/
+            /*Envio da resposta.*/
             return res.status(400).send({status: "error", msg: errors.array()});
         }
         else {
@@ -116,6 +116,7 @@ module.exports = function (app) {
             return req.session.destroy(res.render('sign/signIn'));
         }
         else {
+            /*Renderiza tela de sign In do usúario.*/
             return res.render('sign/signIn');
         }
     });
