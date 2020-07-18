@@ -15,11 +15,15 @@ module.exports.createProject = async function (app, req, res) {
 		/*Atribuição dos dados enviados na requisição.*/
         const project = {projectName: req.body.projectName, idUser: req.session.idUser};
 
+		/*Chamada do service que realiza o cadastro de projetos.*/
         await app.src.services.project.insertProject(app, project);
 
+		/*Envio da resposta.*/
 		return res.status(200).send({status: "success", msg: "Projeto criado com sucesso!"});
 	} catch (error) {
-        app.src.utils.error.errorHandler.errorHandler(error, "createProject");
+		/*Chamada do tratador de erros.*/
+		app.src.utils.error.errorHandler.errorHandler(error, "createProject");
+		/*Envio da resposta.*/
 		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao inserir o projeto!"});
 	}
 }
@@ -37,15 +41,23 @@ module.exports.createProjectVariable = async function (app, req, res) {
 		/*Atribuição dos dados enviados na requisição.*/
         const variable = req.body;
 
+		/*Chamada do service que realiza a busca pelo projeto requisitado.*/
         const project = await app.src.services.project.selectProject(app, [variable.idProject], req.session.idUser);
 
-        if (Array.isArray(project) && project.length === 1) {
-            await app.src.services.project.insertProjectVariable(app, [variable]);
-        }
-
+		/*Verificação se o projeto requisitado foi encontrado.*/
+        if (!Array.isArray(project) || project.length === 0) {
+			/*Envio da resposta.*/
+			return res.status(400).send({status: "error", msg: "Ocorreu um erro ao cadastrar a variável, nenhum projeto foi encontrado!"});
+		}
+		
+		/*Chamada do service que realiza o cadastro de variáveis do projeto.*/
+		await app.src.services.project.insertProjectVariable(app, [variable]);
+		/*Envio da resposta.*/
 		return res.status(200).send({status: "success", msg: "Variável criada com sucesso!"});
 	} catch (error) {
-        app.src.utils.error.errorHandler.errorHandler(error, "createProjectVariable");
+		/*Chamada do tratador de erros.*/
+		app.src.utils.error.errorHandler.errorHandler(error, "createProjectVariable");
+		/*Envio da resposta.*/
 		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao inserir a variável!"});
 	}
 }
@@ -63,11 +75,15 @@ module.exports.listProject = async function (app, req, res) {
 		/*Atribuição dos dados enviados na requisição.*/
         const idProject = req.body.idProject;
 
+		/*Chamada do service que realiza a busca por projetos.*/
         const projects = await app.src.services.project.selectProject(app, idProject, req.session.idUser);
 
+		/*Envio da resposta.*/
 		return res.status(200).send({status: "success", data: projects});
 	} catch (error) {
-        app.src.utils.error.errorHandler.errorHandler(error, "listProject");
+		/*Chamada do tratador de erros.*/
+		app.src.utils.error.errorHandler.errorHandler(error, "listProject");
+		/*Envio da resposta.*/
 		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao buscar os projetos!"});
 	}
 }
@@ -85,11 +101,15 @@ module.exports.deleteProject = async function (app, req, res) {
 		/*Atribuição dos dados enviados na requisição.*/
         const idProject = req.body.idProject;
 
-        await app.src.services.project.deleteProject(app ,idProject);
+		/*Chamada do service que realiza a remoção projetos.*/
+        await app.src.services.project.deleteProject(app ,idProject, req.session.idUser);
 
+		/*Envio da resposta.*/
 		return res.status(200).send({status: "success", msg: "Projeto removido com sucesso!"});
 	} catch (error) {
-        app.src.utils.error.errorHandler.errorHandler(error, "deleteProject");
+		/*Chamada do tratador de erros.*/
+		app.src.utils.error.errorHandler.errorHandler(error, "deleteProject");
+		/*Envio da resposta.*/
 		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao deletar o projeto!"});
 	}
 }

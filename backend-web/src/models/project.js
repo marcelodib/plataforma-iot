@@ -15,15 +15,14 @@ model.prototype.insertProject = function (project) {
 /*========================INSERT PROJECT VARIABLES============================*/
 /**
  * ================================================================
- * |Model insertProjectVariables responsável por vincular um novo |
- * |projeto a suas variáveis no banco de dados.                   |
+ * |Model insertProjectVariables responsável por cadastrar as     |
+ * |variáveis de um projeto no banco de dados.                    |
  * ================================================================
  */
 model.prototype.insertProjectVariable = function (variable) {
     return this._connection("variable").insert(variable);
 }
 /*============================================================================*/
-
 
 /*==============================SELECT PROJECT================================*/
 /**
@@ -34,7 +33,7 @@ model.prototype.insertProjectVariable = function (variable) {
  */
 model.prototype.selectProject = function (idProject, idUser) {
     if (Array.isArray(idProject) && idProject.length > 0) {
-        return this._connection.select().from("project").where("idUser", idUser).whereIn("idProject", idProject);
+        return this._connection.select().from("project").whereIn("idProject", idProject).andWhere("idUser", idUser);
     } else {
         return this._connection.select().from("project").where("idUser", idUser);
     }
@@ -48,8 +47,8 @@ model.prototype.selectProject = function (idProject, idUser) {
  * |projeto do banco de dados.                                    |
  * ================================================================
  */
-model.prototype.deleteProject = function (idProject) {
-        return this._connection("project").where("idProject", idProject).del();
+model.prototype.deleteProject = function (idProject, idUser) {
+        return this._connection("project").where("idProject", idProject).andWhere("idUser", idUser).del();
 }
 /*============================================================================*/
 

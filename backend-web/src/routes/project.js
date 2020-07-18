@@ -32,7 +32,7 @@ module.exports = function (app) {
      * |sessão aberta para acessar essa rota.                                |
      * |Caso as condições sejam verdadeiras, verifica se os dados enviados   |
      * |são validos, e realiza o cadastro do projeto, caso contrario,        |
-     * |retorna o erro.                                                      |
+     * |retorna erro.                                                        |
      * =======================================================================
     */
     app.post('/createProject', 
@@ -44,9 +44,9 @@ module.exports = function (app) {
         if (req.session.idUser !== undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
-            /*Verificação se os parâmetros não apresentam inconsistências.*/            
+            /*Verificação se os parâmetros apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
-                /*Envio da respostas.*/
+                /*Envio da resposta.*/
                 return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
@@ -55,7 +55,7 @@ module.exports = function (app) {
             }
         }
         else {
-            /*Envio da respostas.*/
+            /*Envio da resposta.*/
             return res.status(400).send({status: "error", msg: "Acesso Negado!"});
         }
     });
@@ -68,7 +68,7 @@ module.exports = function (app) {
      * |possuí sessão aberta para acessar essa rota.                         |
      * |Caso as condições sejam verdadeiras, verifica se os dados enviados   |
      * |são validos, e realiza o cadastro das variáveis do projeto,          |
-     * |caso contrario, retorna o erro.                                      |
+     * |caso contrario, retorna erro.                                        |
      * =======================================================================
     */
     app.post('/createProjectVariable', 
@@ -82,18 +82,18 @@ module.exports = function (app) {
         if (req.session.idUser !== undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
-            /*Verificação se os parâmetros não apresentam inconsistências.*/            
+            /*Verificação se os parâmetros apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
                 /*Envio da respostas.*/
                 return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
-                /*Chamada do controller parar realizar a inserção do novo projeto.*/
+                /*Chamada do controller parar realizar a inserção da nova variável do projeto.*/
                 app.src.controllers.project.createProjectVariable(app, req, res);
             }
         }
         else {
-            /*Envio da respostas.*/
+            /*Envio da resposta.*/
             return res.status(400).send({status: "error", msg: "Acesso Negado!"});
         }
     });
@@ -125,7 +125,7 @@ module.exports = function (app) {
      * |Route listProject responsável por verificar se o usuário possuí       |
      * |sessão aberta para acessar essa rota.                                 |
      * |Caso as condições sejam verdadeiras, verifica se os dados enviados    |
-     * |são validos, e realiza a busca dos dados projetos requisitados,       |
+     * |são validos, e realiza a busca dos dados dos projetos requisitados,   |
      * |caso contrario, retorna o erro.                                       |
      * ========================================================================
     */
@@ -135,13 +135,13 @@ module.exports = function (app) {
         if (req.session.idUser !== undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
-            /*Verificação se os parâmetros não apresentam inconsistências.*/            
+            /*Verificação se os parâmetros apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
-                /*Envio da respostas.*/
+                /*Envio da resposta.*/
                 return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
-                /*Chamada do controller parar realizar a busca dos projetos.*/
+                /*Chamada do controller parar realizar a busca dos dados dos projetos.*/
                 app.src.controllers.project.listProject(app, req, res);
             }
         }
@@ -167,9 +167,9 @@ module.exports = function (app) {
         if (req.session.idUser !== undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
-            /*Verificação se os parâmetros não apresentam inconsistências.*/            
+            /*Verificação se os parâmetros apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
-                /*Envio da respostas.*/
+                /*Envio da resposta.*/
                 return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
@@ -178,13 +178,13 @@ module.exports = function (app) {
             }
         }
         else {
-            /*Envio da respostas.*/
+            /*Envio da resposta.*/
             return res.status(400).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
 
-/*================================HOME PROJECT================================*/
+/*=================================DASHBOARD==================================*/
     /** 
      * =======================================================================
      * |Route dashboard responsável por verificar se o usuário possuí        |
@@ -196,7 +196,7 @@ module.exports = function (app) {
     app.get('/dashboard', function (req, res) {
         /*Verificação se o usuário possui sessão aberta para acessar essa rota.*/
         if (req.session.idUser !== undefined) {
-            /*Renderiza tela de home de projeto.*/
+            /*Renderiza tela de dashboard do projeto.*/
             return res.render("./project/dashboard");
         }
         else{
@@ -212,7 +212,7 @@ module.exports = function (app) {
      * |Route dataProject responsável por verificar se o usuário possuí         |
      * |sessão aberta para acessar essa rota.                                   |
      * |Caso as condições sejam verdadeiras, verifica se os dados enviados      |
-     * |são validos, e buscar as medidas do projeto na base de dados,           |
+     * |são validos, e busca as medidas do projeto no banco de dados,           |
      * |caso contrario, retorna o erro.                                         |
      * ==========================================================================
     */
@@ -227,9 +227,9 @@ module.exports = function (app) {
         if (req.session.idUser !== undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
-            /*Verificação se os parâmetros não apresentam inconsistências.*/            
+            /*Verificação se os parâmetros apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
-                /*Envio da respostas.*/
+                /*Envio da resposta.*/
                 return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
@@ -238,7 +238,7 @@ module.exports = function (app) {
             }
         }
         else {
-            /*Envio da respostas.*/
+            /*Envio da resposta.*/
             return res.status(400).send({status: "error", msg: "Acesso Negado!"});
         }
     });

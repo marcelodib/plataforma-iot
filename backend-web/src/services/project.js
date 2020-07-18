@@ -24,7 +24,7 @@ module.exports.insertProjectVariable = async function (app, variable) {
     const connection = app.config.database();
     const model = new app.src.models.project(connection);
     
-    /*Chamando o model responsável pela inserção de projeto.*/
+    /*Chamando o model responsável pela inserção de variáveis do projeto.*/
     const result = await model.insertProjectVariable(variable);
     
     /*Verificação do resultado.*/
@@ -55,13 +55,13 @@ module.exports.selectProject = async function (app, idProject, idUser) {
 /*================================================================================*/
 
 /*===============================DELETE PROJECT===================================*/
-module.exports.deleteProject = async function (app, idProject) {
+module.exports.deleteProject = async function (app, idProject, idUser) {
     /*Requisitando a conexão com o banco de dados.*/
     const connection = app.config.database();
     const model = new app.src.models.project(connection);
     
     /*Chamando o model responsável pela remoção de projetos.*/
-    const result = await model.deleteProject(idProject);
+    const result = await model.deleteProject(idProject, idUser);
     
     /*Verificação do resultado.*/
     if (result) {
