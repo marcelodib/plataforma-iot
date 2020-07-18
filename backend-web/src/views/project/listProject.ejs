@@ -1,0 +1,347 @@
+<%include ../common/header.ejs%>
+<link rel="stylesheet" type="text/css" href="css/customForm.css">
+
+<!-- CONTENT -->
+<br><br><br><br>
+<div class="container">
+    <div class="form-group">
+        <input class="form-control col-md-8" type="text" id="searchProject" onkeyup="searchProject()"
+            placeholder="Buscar por nome...">
+    </div>
+    <br>
+    <div class="table-responsive">
+        <table class="table" id="projectTable">
+            <thead id="tableHeader">
+                <th>Dashboard</th>
+                <th>Adicionar Variável</th>
+                <th>Nome</th>
+                <th>Token</th>
+                <th>Deletar</th>
+            </thead>
+            <tbody id="projectList">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Criando Variável</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:createProjectVariable()" method="POST">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Nome da Variável</label>
+                        <input type="text" placeholder="" name="variableName" id="variableName" class="form-control"
+                            pattern="[A-Za-zÀ-ú0-9.,\- ]{1,127}$" maxlength="127" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-cube"></i> Método de exibição</label>
+                        <br>
+                        <select class="form-control single" style="width: 100%;" name="idExhibition"
+                            id="idExhibition" multiple="multiple" required>
+                            <option value="1">Gráfico</option>
+                            <option value="2">Tabela</option>
+                            <option value="3">Card</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="background-color: #33DDFF; border-color: #33DDFF;">Cadastrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /CONTENT -->
+
+<%include ../common/footer.ejs%>
+
+<script>
+    let idProjectSelected = 0;
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável executar todas as rotinas iniciais|
+     * |da página assim que ela é carregada.                 |
+     * =======================================================
+     */
+    window.onload = () => {
+        /*Chamada da função que adiciona o titulo da side bar.*/
+        setSideBarTitle("Listar Projetos", "fa-list")
+        listProject();
+    };
+    $(document).ready(function () {
+        /*Chamada da função que ativa a side bar.*/
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+
+        /*Chamada da função que ativa os dropdowns.*/
+        $('.single').select2({
+            maximumSelectionLength: 1
+        });
+    });
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável realizar o filtro de busca na     |
+     * |tabela de projetos, utilizando o campo nome como     |
+     * |referência.                                          |
+     * =======================================================
+     */
+    function searchProject() {
+        const input = document.getElementById("searchProject"); /*Variável que contém o elemento de tela de busca na tabela.*/
+        const filter = input.value.toUpperCase();            /*Variável que contém o valor do campo de busca em upper case.*/
+        const table = document.getElementById("projectTable");  /*Variável que contém o elemento de tela da tabela de usuários.*/
+        const tr = table.getElementsByTagName("tr");         /*Variável que contém os elementos de tela com tag <tr>.*/
+        
+        let txtValue; /*Variável que conterá o texto da posição.*/
+        let td;       /*Variável que conterá o elemento de tela com tag <td>.*/
+        
+        /*Loop responsável por percorrer todas as linhas da tabela procurando pelo valor buscado.*/
+        for (let i = 0; i < tr.length; i++) {
+            /*Atribuição do terceiro item da linha.*/
+            td = tr[i].getElementsByTagName("td")[2];
+            if(td) {
+                /*Atribuição do conteúdo da posição.*/
+                txtValue = td.textContent || td.innerText;
+                /*Verificação se o valor buscado está contido no item.*/
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    /*Torna a linha visível.*/
+                    tr[i].style.display = "";
+                } else {
+                    /*Torna a linha invisível.*/
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por buscar todos os projectos do   |
+     * |usuário disponíveis no servidor para serem listados.  |
+     * ========================================================
+     */
+    function listProject() {
+        document.getElementById("projectList").innerHTML = "";
+
+        /* Chamada axios para a rota listProject para buscar todos os projetos do usuário.*/
+        axios.post("/listProject", {idProject: []})
+        .then(function (response) {
+            /*Chamada da função que torna o objeto user imutável.*/
+            Object.freeze(response);
+            /* Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status == "success") {
+                /*Variável que contém os projetos retornados pelo servidor.*/
+                const projects = response.data.data;
+
+                /*Variável de manipulação do elemento projectList.*/
+                const list = document.getElementById("projectList");
+
+                /*Loop responsável por renderizar cada porjeto na tabela.*/
+                projects.forEach(element => {
+                    list.innerHTML += templateListProject(element);
+                });
+            } else {
+                /*Atribuição da mensagem de retorno do servidor.*/
+                let msg = response.data.msg;
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(msg)) {
+                    /*Atribuição de string vazia a variável.*/
+                    msg = "";
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in response.data.msg) {
+                        msg += response.data.msg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                alert(msg);
+            }
+        })
+        .catch(function (error) {
+            /*Tratamento de erro.*/
+            alert("ERROR");
+            console.log(error);
+        });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por enviar ao servidor um pedido de|
+     * |remoção de um determinado projeto do usuário.         |
+     * ========================================================
+     */
+    function deleteProject(idProject) {
+        if(confirm("Você gostaria mesmo de deletar esse projeto?")) {
+            /**
+             * Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.
+             */
+            axios.post("/deleteProject", {idProject: idProject})
+            .then(function (response) {
+                /*Chamada da função que torna o objeto user imutável.*/
+                Object.freeze(response);
+                /* Tratamento do retorno.*/
+                if (response.status === 200 && response.data.status == "success") {
+                    alert(response.data.msg);
+                    /*Reload da lista de projetos*/
+                    listProject();
+                } else {
+                    /*Atribuição da mensagem de retorno do servidor.*/
+                    let msg = response.data.msg;
+                    /*Verificação se foi enviada mais de uma mensagem.*/
+                    if(Array.isArray(msg)) {
+                        /*Atribuição de string vazia a variável.*/
+                        msg = "";
+                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                        for (const i in response.data.msg) {
+                            msg += response.data.msg[i].msg + "\n";
+                        }
+                    } 
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                    alert(msg);
+                }
+            })
+            .catch(function (error) {
+                /*Tratamento de erro.*/
+                alert("ERROR");
+                console.log(error);
+            });
+        }        
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por realizar o upload do dataset  |
+     * |importado pelo usuário.                              |
+     * =======================================================
+     */
+    function createProjectVariable() {
+
+        const variable = {
+            variableName: document.getElementById("variableName").value, /*Atributo que contém o nome da variável.*/
+            idExhibition: document.getElementById("idExhibition").value, /*Atributo que contém o id do modo de exibição.*/
+            idProject: idProjectSelected
+        };
+        /*Verificação do nome da variável.*/
+        if (variable.variableName === undefined || variable.variableName === null || variable.variableName === "" || variable.variableName.length > 127) {
+            return alert("Nome da variável inválido!");
+        }
+
+        /*Verificação do identificador do modo de exibição.*/
+        if (variable.idExhibition === undefined || variable.idExhibition === null || isNaN(variable.idExhibition) || variable.idExhibition < 1) {
+            return alert("Modo de exibição inválido!");
+        }
+
+        /*Verificação do identificador do modo de exibição.*/
+        if (variable.idProject === undefined || variable.idProject === null || isNaN(variable.idProject) || variable.idProject < 1) {
+            return alert("Projeto inválido!");
+        }
+
+        axios.post("/createProjectVariable", variable)
+        .then((response) => {
+            /*Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status == "success") {
+
+                $('#exampleModalCenter').modal('hide');
+
+                idProjectSelected = 0;
+
+                alert(response.data.msg);
+
+            } else {
+                /*Atribuição da mensagem de retorno do servidor.*/
+                let msg = response.data.msg;
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(msg)) {
+                    /*Atribuição de string vazia a variável.*/
+                    msg = "";
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in response.data.msg) {
+                        msg += response.data.msg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                alert(msg);
+            }
+        })
+        .catch((error) => {
+            /*Tratamento de erro*/
+            alert("ERROR");
+            console.log(error);
+        });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por chamar a rota de download do  |
+     * |modelo treinado do projeto requisitado.              |
+     * =======================================================
+     */
+    function openDashboard(idProject) {
+        window.open("/dashboard?idProject=" + idProject);
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por salvar o id do projeto        |
+     * |selecionado pelo usuário, para realizar o upload do  |
+     * |dataset.                                             |
+     * =======================================================
+     */
+    function setIdProject(idProject) {
+        /*Atribuição do id do projeto selecionado na variável de controle*/
+        idProjectSelected = idProject;
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por retornar um template html de  |
+     * |um determinado item da tabela, correspondente a um   |
+     * |projeto.                                             |
+     * =======================================================
+     */
+    function templateListProject(project) {
+        return `
+            <td>
+                <i class="btn fas fa-chart-line btn-primary" onClick="openDashboard(\'${project.idProject}\');" style="background-color: #33DDFF; border-color: #33DDFF;"></i>
+            </td>
+            <td>
+                <i class="btn fas fa-plus-circle btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #33DDFF; border-color: #33DDFF;" data-toggle="modal" data-target="#exampleModalCenter"></i>
+            </td>
+            <td>${project.projectName}</td>
+            <td>Token</td>
+            <td>
+                <i class="btn fas fa-trash btn-danger" onClick="deleteProject(\'${project.idProject}\');"></i>
+            </td>
+        `;
+    }
+/*============================================================================*/
+
+</script>
+
+</html>
