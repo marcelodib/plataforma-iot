@@ -274,8 +274,8 @@
 /*============================================================================*/
     /**
      * =======================================================
-     * |Função responsável por realizar o upload do dataset  |
-     * |importado pelo usuário.                              |
+     * |Função responsável por realizar a criação de variável|
+     * |de um determinado projeto.                           |
      * =======================================================
      */
     function createVariable() {
@@ -306,8 +306,10 @@
             /*Tratamento do retorno.*/
             if (response.status === 200 && response.data.status == "success") {
 
+                /*Chamada da função reponsável por fechar o modal.*/
                 $('#exampleModalCenter').modal('hide');
 
+                /*Atribuição de valores nulos nos campos de cadastro.*/
                 $('#idExhibition').val(null).trigger('change');
                 document.getElementById("variableName").value = "";
                 idProjectSelected = 0;
@@ -377,18 +379,18 @@
     /**
      * ========================================================
      * |Função responsável por enviar ao servidor um pedido de|
-     * |remoção de um determinado projeto do usuário.         |
+     * |remoção de uma variável de um determinado projeto.    |
      * ========================================================
      */
     function deleteVariable(idProject, idVariable) {
         if(confirm("Você gostaria mesmo de deletar essa variável?")) {
-            /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
+            /*Chamada axios para a rota deleteVariable para remover uma variável de um determinado projeto.*/
             axios.post("/deleteVariable", {idProject: idProject, idVariable: idVariable})
             .then(function (response) {
                 /* Tratamento do retorno.*/
                 if (response.status === 200 && response.data.status == "success") {
                     alert(response.data.msg);
-                    /*Reload da lista de projetos*/
+                    /*Reload da lista de variáveis*/
                     listVariable(idProject);
                 }
             })
@@ -415,8 +417,8 @@
 /*============================================================================*/
     /**
      * =======================================================
-     * |Função responsável por chamar a rota de download do  |
-     * |modelo treinado do projeto requisitado.              |
+     * |Função responsável por chamar a rota de abertura do  |
+     * |dashboard.                                           |
      * =======================================================
      */
     function openDashboard(idProject) {
@@ -428,8 +430,8 @@
     /**
      * =======================================================
      * |Função responsável por salvar o id do projeto        |
-     * |selecionado pelo usuário, para realizar o upload do  |
-     * |dataset.                                             |
+     * |selecionado pelo usuário, para realizar a inserção   |
+     * |de uma nova variável.                                |
      * =======================================================
      */
     function setIdProject(idProject) {
