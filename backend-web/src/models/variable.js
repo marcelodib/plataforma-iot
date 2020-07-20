@@ -20,11 +20,14 @@ model.prototype.insertVariable = function (variable) {
  * ================================================================
  */
 model.prototype.selectVariable = function (idProject, idUser) {
-    return this._connection.select().from({p:"project", v:"variable"}).whereRaw(`v.idProject = ${idProject}`).whereRaw(`p.idUser = ${idUser}`).whereRaw("p.idProject = v.idProject");
+    return this._connection.select().from({p:"project", v:"variable"})
+    .whereRaw(`v.idProject = ${idProject}`)
+    .whereRaw(`p.idUser = ${idUser}`)
+    .whereRaw("p.idProject = v.idProject");
 }
 /*============================================================================*/
 
-/*==============================SELECT VARIABLE===============================*/
+/*==============================DELETE VARIABLE===============================*/
 /**
  * ================================================================
  * |Model deleteVariable responsável por remover um determinado   | 

@@ -66,8 +66,8 @@ module.exports.listVariable = async function (app, req, res) {
 /*===============================DELETE VARIABLE==============================*/
 /**
  * ================================================================
- * |Controller deleteVariable responsável por remover um           |
- * |determinado projeto.                                          |
+ * |Controller deleteVariable responsável por remover uma         |
+ * | variável de um determinado projeto.                          |
  * ================================================================
  */
 module.exports.deleteVariable = async function (app, req, res) {

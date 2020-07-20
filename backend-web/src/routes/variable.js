@@ -86,7 +86,7 @@ module.exports = function (app) {
     */
     app.post('/deleteVariable', 
     [
-        check('idProject', 'Identificador do Projeto Inválido!').not().isEmpty().escape().isInt(),
+        check('idProject' , 'Identificador do Projeto Inválido!' ).not().isEmpty().escape().isInt(),
         check('idVariable', 'Identificador da Variável Inválida!').not().isEmpty().escape().isInt(),
     ], 
     function (req, res) {
