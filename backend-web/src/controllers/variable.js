@@ -32,7 +32,7 @@ module.exports.createVariable = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "createVariable");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao inserir a variável!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao inserir a variável!"});
 	}
 }
 /*============================================================================*/
@@ -93,7 +93,7 @@ module.exports.deleteVariable = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "deleteVariable");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao deletar a variável!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao deletar a variável!"});
 	}
 }
 /*============================================================================*/

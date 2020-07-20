@@ -49,7 +49,7 @@ module.exports.signIn = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "signIn");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao tentar autenticar o usuário!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao tentar autenticar o usuário!"});
 	}
 }
 /*============================================================================*/
@@ -80,7 +80,7 @@ module.exports.signUp = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "signUp");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao tentar cadastrar o usuário!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao tentar cadastrar o usuário!"});
 	}
 }
 /*============================================================================*/

@@ -105,33 +105,27 @@
         else {
             axios.post("/signIn", user)
             .then((response) => {
-                /*Chamada da função que torna o objeto user imutável.*/
-				Object.freeze(response);
                 /*Tratamento do retorno.*/
                 if (response.status === 200 && response.data.status == "success") {
                     /*Redirecionamento para home do sistema.*/
                     window.location.href = "/"
                 }
-                else{
-                    /*Atribuição da mensagem de retorno do servidor.*/
-                    let msg = response.data.msg;
-                    /*Verificação se foi enviada mais de uma mensagem.*/
-                    if(Array.isArray(msg)) {
-                        /*Atribuição de string vazia a variável.*/
-                        msg = "";
-                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                        for (const i in response.data.msg) {
-                            msg += response.data.msg[i].msg + "\n";
-                        }
-                    } 
-                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                    alert(msg);
-                }
             })
             .catch((error) => {
-                /*Tratamento de erro.*/
-                alert("ERROR");
-                console.log(error);
+                /*Atribuição da mensagem de retorno do servidor.*/
+                const errorMsg = error.response.data.msg;
+
+                let msg = "";
+
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(errorMsg)) {
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in errorMsg) {
+                        msg += errorMsg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                alert(msg);
             });
         }
     }

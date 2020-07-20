@@ -24,7 +24,7 @@ module.exports.createProject = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "createProject");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao inserir o projeto!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao inserir o projeto!"});
 	}
 }
 /*============================================================================*/
@@ -50,7 +50,7 @@ module.exports.listProject = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "listProject");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao buscar os projetos!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao buscar os projetos!"});
 	}
 }
 /*============================================================================*/
@@ -76,7 +76,7 @@ module.exports.deleteProject = async function (app, req, res) {
 		/*Chamada do tratador de erros.*/
 		app.src.utils.error.errorHandler.errorHandler(error, "deleteProject");
 		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao deletar o projeto!"});
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao deletar o projeto!"});
 	}
 }
 /*============================================================================*/

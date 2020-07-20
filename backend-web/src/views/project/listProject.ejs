@@ -184,8 +184,6 @@
         /* Chamada axios para a rota listProject para buscar todos os projetos do usuário.*/
         axios.post("/listProject", {idProject: []})
         .then(function (response) {
-            /*Chamada da função que torna o objeto user imutável.*/
-            Object.freeze(response);
             /* Tratamento do retorno.*/
             if (response.status === 200 && response.data.status == "success") {
                 /*Variável que contém os projetos retornados pelo servidor.*/
@@ -202,14 +200,15 @@
         })
         .catch(function (error) {
             /*Atribuição da mensagem de retorno do servidor.*/
-            let msg = error.response.data.msg;
+            const errorMsg = error.response.data.msg;
+
+            let msg = "";
+
             /*Verificação se foi enviada mais de uma mensagem.*/
-            if(Array.isArray(msg)) {
-                /*Atribuição de string vazia a variável.*/
-                msg = "";
+            if(Array.isArray(errorMsg)) {
                 /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                for (const i in response.data.msg) {
-                    msg += response.data.msg[i].msg + "\n";
+                for (const i in errorMsg) {
+                    msg += errorMsg[i].msg + "\n";
                 }
             } 
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
@@ -255,14 +254,15 @@
         })
         .catch((error) => {
             /*Atribuição da mensagem de retorno do servidor.*/
-            let msg = error.response.data.msg;
+            const errorMsg = error.response.data.msg;
+
+            let msg = "";
+
             /*Verificação se foi enviada mais de uma mensagem.*/
-            if(Array.isArray(msg)) {
-                /*Atribuição de string vazia a variável.*/
-                msg = "";
+            if(Array.isArray(errorMsg)) {
                 /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                for (const i in response.data.msg) {
-                    msg += response.data.msg[i].msg + "\n";
+                for (const i in errorMsg) {
+                    msg += errorMsg[i].msg + "\n";
                 }
             } 
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
@@ -285,6 +285,7 @@
             idExhibition: document.getElementById("idExhibition").value, /*Atributo que contém o id do modo de exibição.*/
             idProject: idProjectSelected
         };
+
         /*Verificação do nome da variável.*/
         if (variable.variableName === undefined || variable.variableName === null || variable.variableName === "" || variable.variableName.length > 127) {
             return alert("Nome da variável inválido!");
@@ -316,14 +317,15 @@
         })
         .catch((error) => {
             /*Atribuição da mensagem de retorno do servidor.*/
-            let msg = error.response.data.msg;
+            const errorMsg = error.response.data.msg;
+
+            let msg = "";
+
             /*Verificação se foi enviada mais de uma mensagem.*/
-            if(Array.isArray(msg)) {
-                /*Atribuição de string vazia a variável.*/
-                msg = "";
+            if(Array.isArray(errorMsg)) {
                 /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                for (const i in response.data.msg) {
-                    msg += response.data.msg[i].msg + "\n";
+                for (const i in errorMsg) {
+                    msg += errorMsg[i].msg + "\n";
                 }
             } 
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
@@ -344,8 +346,6 @@
             /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
             axios.post("/deleteProject", {idProject: idProject})
             .then(function (response) {
-                /*Chamada da função que torna o objeto user imutável.*/
-                Object.freeze(response);
                 /* Tratamento do retorno.*/
                 if (response.status === 200 && response.data.status == "success") {
                     alert(response.data.msg);
@@ -355,14 +355,15 @@
             })
             .catch(function (error) {
                 /*Atribuição da mensagem de retorno do servidor.*/
-                let msg = error.response.data.msg;
+                const errorMsg = error.response.data.msg;
+
+                let msg = "";
+
                 /*Verificação se foi enviada mais de uma mensagem.*/
-                if(Array.isArray(msg)) {
-                    /*Atribuição de string vazia a variável.*/
-                    msg = "";
+                if(Array.isArray(errorMsg)) {
                     /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                    for (const i in response.data.msg) {
-                        msg += response.data.msg[i].msg + "\n";
+                    for (const i in errorMsg) {
+                        msg += errorMsg[i].msg + "\n";
                     }
                 } 
                 /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
@@ -384,8 +385,6 @@
             /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
             axios.post("/deleteVariable", {idProject: idProject, idVariable: idVariable})
             .then(function (response) {
-                /*Chamada da função que torna o objeto user imutável.*/
-                Object.freeze(response);
                 /* Tratamento do retorno.*/
                 if (response.status === 200 && response.data.status == "success") {
                     alert(response.data.msg);
@@ -395,14 +394,15 @@
             })
             .catch(function (error) {
                 /*Atribuição da mensagem de retorno do servidor.*/
-                let msg = error.response.data.msg;
+                const errorMsg = error.response.data.msg;
+
+                let msg = "";
+
                 /*Verificação se foi enviada mais de uma mensagem.*/
-                if(Array.isArray(msg)) {
-                    /*Atribuição de string vazia a variável.*/
-                    msg = "";
+                if(Array.isArray(errorMsg)) {
                     /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                    for (const i in response.data.msg) {
-                        msg += response.data.msg[i].msg + "\n";
+                    for (const i in errorMsg) {
+                        msg += errorMsg[i].msg + "\n";
                     }
                 } 
                 /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
