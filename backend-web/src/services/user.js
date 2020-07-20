@@ -32,7 +32,6 @@ module.exports.selectUser = async function (app, user) {
         return result;
     } else {
         throw {type: "Database error", model: "selectUser", error: result};
-
     }
 }
 /*================================================================================*/
