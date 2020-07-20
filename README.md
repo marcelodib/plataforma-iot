@@ -20,5 +20,5 @@ Essa plataforma está sendo desenvolvida com o intuito de ajudar pessoas que tra
 - Dashboard do projeto customizável (Gráficos / Tabelas / Cards).
 - Envio de dados do dispositivo via MQTT.
 
-# Acompanhe o andamento do projeto
+# Andamento do projeto
 https://trello.com/b/dRBEJNNv/plataforma-iot
