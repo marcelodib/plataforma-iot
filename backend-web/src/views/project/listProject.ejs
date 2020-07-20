@@ -4,39 +4,46 @@
 <!-- CONTENT -->
 <br><br><br><br>
 <div class="container">
+
     <div class="form-group">
         <input class="form-control col-md-8" type="text" id="searchProject" onkeyup="searchProject()"
             placeholder="Buscar por nome...">
     </div>
+
     <br>
+
     <div class="table-responsive">
         <table class="table" id="projectTable">
             <thead id="tableHeader">
                 <th>Dashboard</th>
-                <th>Adicionar Variável</th>
+                <th>Add Var</th>
+                <th>Vars</th>
                 <th>Nome</th>
                 <th>Token</th>
                 <th>Deletar</th>
             </thead>
             <tbody id="projectList">
-
             </tbody>
         </table>
     </div>
+
 </div>
 
-<!-- Modal -->
+<!-- Modal Insert Variable-->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+
             <div class="modal-header">
                 <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Criando Variável</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
-                <form action="javascript:createProjectVariable()" method="POST">
+                <form action="javascript:createVariable()" method="POST">
+
                     <div class="form-group">
                         <label><i class="fas fa-tag"></i> Nome da Variável</label>
                         <input type="text" placeholder="" name="variableName" id="variableName" class="form-control"
@@ -57,8 +64,42 @@
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" style="background-color: #33DDFF; border-color: #33DDFF;">Cadastrar</button>
                     </div>
+
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal List Variables-->
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Variáveis Cadastradas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="table-responsive" style="height: 250px; overflow: scroll;">
+                    <table class="table" id="variableTable">
+                        <thead id="tableHeader">
+                            <th>ID Var</th>
+                            <th>Nome</th>
+                            <th>Modo de exibição</th>
+                            <th>Deletar</th>
+                        </thead>
+                        <tbody id="variableList">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer"></div>
+
         </div>
     </div>
 </div>
@@ -103,9 +144,9 @@
      */
     function searchProject() {
         const input = document.getElementById("searchProject"); /*Variável que contém o elemento de tela de busca na tabela.*/
-        const filter = input.value.toUpperCase();            /*Variável que contém o valor do campo de busca em upper case.*/
+        const filter = input.value.toUpperCase();               /*Variável que contém o valor do campo de busca em upper case.*/
         const table = document.getElementById("projectTable");  /*Variável que contém o elemento de tela da tabela de usuários.*/
-        const tr = table.getElementsByTagName("tr");         /*Variável que contém os elementos de tela com tag <tr>.*/
+        const tr = table.getElementsByTagName("tr");            /*Variável que contém os elementos de tela com tag <tr>.*/
         
         let txtValue; /*Variável que conterá o texto da posição.*/
         let td;       /*Variável que conterá o elemento de tela com tag <td>.*/
@@ -133,8 +174,8 @@
 /*============================================================================*/
     /**
      * ========================================================
-     * |Função responsável por buscar todos os projectos do   |
-     * |usuário disponíveis no servidor para serem listados.  |
+     * |Função responsável por buscar todos os projetos do    |
+     * |usuário para serem listados.                          |
      * ========================================================
      */
     function listProject() {
@@ -153,30 +194,26 @@
                 /*Variável de manipulação do elemento projectList.*/
                 const list = document.getElementById("projectList");
 
-                /*Loop responsável por renderizar cada porjeto na tabela.*/
+                /*Loop responsável por renderizar cada projeto na tabela.*/
                 projects.forEach(element => {
                     list.innerHTML += templateListProject(element);
                 });
-            } else {
-                /*Atribuição da mensagem de retorno do servidor.*/
-                let msg = response.data.msg;
-                /*Verificação se foi enviada mais de uma mensagem.*/
-                if(Array.isArray(msg)) {
-                    /*Atribuição de string vazia a variável.*/
-                    msg = "";
-                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                    for (const i in response.data.msg) {
-                        msg += response.data.msg[i].msg + "\n";
-                    }
-                } 
-                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                alert(msg);
             }
         })
         .catch(function (error) {
-            /*Tratamento de erro.*/
-            alert("ERROR");
-            console.log(error);
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = error.response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in response.data.msg) {
+                    msg += response.data.msg[i].msg + "\n";
+                }
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            alert(msg);
         });
     }
 /*============================================================================*/
@@ -184,46 +221,53 @@
 /*============================================================================*/
     /**
      * ========================================================
-     * |Função responsável por enviar ao servidor um pedido de|
-     * |remoção de um determinado projeto do usuário.         |
+     * |Função responsável por buscar todas as variáveis do   |
+     * |projeto selecionado.                                  |
      * ========================================================
      */
-    function deleteProject(idProject) {
-        if(confirm("Você gostaria mesmo de deletar esse projeto?")) {
-            /**
-             * Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.
-             */
-            axios.post("/deleteProject", {idProject: idProject})
-            .then(function (response) {
-                /*Chamada da função que torna o objeto user imutável.*/
-                Object.freeze(response);
-                /* Tratamento do retorno.*/
-                if (response.status === 200 && response.data.status == "success") {
-                    alert(response.data.msg);
-                    /*Reload da lista de projetos*/
-                    listProject();
-                } else {
-                    /*Atribuição da mensagem de retorno do servidor.*/
-                    let msg = response.data.msg;
-                    /*Verificação se foi enviada mais de uma mensagem.*/
-                    if(Array.isArray(msg)) {
-                        /*Atribuição de string vazia a variável.*/
-                        msg = "";
-                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                        for (const i in response.data.msg) {
-                            msg += response.data.msg[i].msg + "\n";
-                        }
-                    } 
-                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                    alert(msg);
+    function listVariable (idProject) {
+        /*Varificação se o idProject enviado é válido.*/
+        if (isNaN(idProject) || idProject === 0) {
+            return alert("Identificador do projeto inválido!")
+        }
+
+        /*Remoção de todos os itens da lista de variáveis.*/
+        document.getElementById("variableList").innerHTML = "";
+
+        /*Chamada axios para a rota listProjectVariables para buscar as variáveis do projeto selecionado.*/
+        axios.post("/listVariable", {idProject: idProject})
+        .then((response) => {
+            /* Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status === "success") {
+                /*Atribuição das variáveis enviadas.*/
+                const variables = response.data.data;
+                /*Variável de manipulação do elemente variableList*/
+                const list = document.getElementById("variableList");
+
+                /*Loop responsável por renderizar cada variável na lista.*/
+                variables.forEach(element => {
+                    list.innerHTML += templateListVariable(element, idProject); 
+                });
+
+                /*Chamada da função que mostra o modal.*/
+                $('#exampleModalCenter1').modal('show');
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = error.response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in response.data.msg) {
+                    msg += response.data.msg[i].msg + "\n";
                 }
-            })
-            .catch(function (error) {
-                /*Tratamento de erro.*/
-                alert("ERROR");
-                console.log(error);
-            });
-        }        
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            alert(msg);
+        });
     }
 /*============================================================================*/
 
@@ -234,7 +278,7 @@
      * |importado pelo usuário.                              |
      * =======================================================
      */
-    function createProjectVariable() {
+    function createVariable() {
 
         const variable = {
             variableName: document.getElementById("variableName").value, /*Atributo que contém o nome da variável.*/
@@ -256,20 +300,62 @@
             return alert("Projeto inválido!");
         }
 
-        axios.post("/createProjectVariable", variable)
+        axios.post("/createVariable", variable)
         .then((response) => {
             /*Tratamento do retorno.*/
             if (response.status === 200 && response.data.status == "success") {
 
                 $('#exampleModalCenter').modal('hide');
 
+                $('#idExhibition').val(null).trigger('change');
+                document.getElementById("variableName").value = "";
                 idProjectSelected = 0;
 
                 alert(response.data.msg);
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = error.response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in response.data.msg) {
+                    msg += response.data.msg[i].msg + "\n";
+                }
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            alert(msg);
+        });
+    }
+/*============================================================================*/
 
-            } else {
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por enviar ao servidor um pedido de|
+     * |remoção de um determinado projeto do usuário.         |
+     * ========================================================
+     */
+    function deleteProject(idProject) {
+        if(confirm("Você gostaria mesmo de deletar esse projeto?")) {
+            /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
+            axios.post("/deleteProject", {idProject: idProject})
+            .then(function (response) {
+                /*Chamada da função que torna o objeto user imutável.*/
+                Object.freeze(response);
+                /* Tratamento do retorno.*/
+                if (response.status === 200 && response.data.status == "success") {
+                    alert(response.data.msg);
+                    /*Reload da lista de projetos*/
+                    listProject();
+                }
+            })
+            .catch(function (error) {
                 /*Atribuição da mensagem de retorno do servidor.*/
-                let msg = response.data.msg;
+                let msg = error.response.data.msg;
                 /*Verificação se foi enviada mais de uma mensagem.*/
                 if(Array.isArray(msg)) {
                     /*Atribuição de string vazia a variável.*/
@@ -281,13 +367,48 @@
                 } 
                 /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
                 alert(msg);
-            }
-        })
-        .catch((error) => {
-            /*Tratamento de erro*/
-            alert("ERROR");
-            console.log(error);
-        });
+            });
+        }        
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por enviar ao servidor um pedido de|
+     * |remoção de um determinado projeto do usuário.         |
+     * ========================================================
+     */
+    function deleteVariable(idProject, idVariable) {
+        if(confirm("Você gostaria mesmo de deletar essa variável?")) {
+            /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
+            axios.post("/deleteVariable", {idProject: idProject, idVariable: idVariable})
+            .then(function (response) {
+                /*Chamada da função que torna o objeto user imutável.*/
+                Object.freeze(response);
+                /* Tratamento do retorno.*/
+                if (response.status === 200 && response.data.status == "success") {
+                    alert(response.data.msg);
+                    /*Reload da lista de projetos*/
+                    listVariable(idProject);
+                }
+            })
+            .catch(function (error) {
+                /*Atribuição da mensagem de retorno do servidor.*/
+                let msg = error.response.data.msg;
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(msg)) {
+                    /*Atribuição de string vazia a variável.*/
+                    msg = "";
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in response.data.msg) {
+                        msg += response.data.msg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                alert(msg);
+            });
+        }        
     }
 /*============================================================================*/
 
@@ -325,18 +446,41 @@
      * |projeto.                                             |
      * =======================================================
      */
-    function templateListProject(project) {
+    function templateListProject(project) { 
         return `
             <td>
-                <i class="btn fas fa-chart-line btn-primary" onClick="openDashboard(\'${project.idProject}\');" style="background-color: #33DDFF; border-color: #33DDFF;"></i>
+                <i class="btn fas fa-chart-line btn-primary" onClick="openDashboard(${project.idProject});" style="background-color: #33DDFF; border-color: #33DDFF;"></i>
             </td>
             <td>
-                <i class="btn fas fa-plus-circle btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #33DDFF; border-color: #33DDFF;" data-toggle="modal" data-target="#exampleModalCenter"></i>
+                <i class="btn fas fa-plus-circle btn-primary" onClick="setIdProject(${project.idProject});" style="background-color: #33DDFF; border-color: #33DDFF;" data-toggle="modal" data-target="#exampleModalCenter"></i>
+            </td>
+            <td>
+                <i class="btn fas fa-list-ul btn-primary" onClick="listVariable(${project.idProject});" style="background-color: #33DDFF; border-color: #33DDFF;"></i>
             </td>
             <td>${project.projectName}</td>
             <td>Token</td>
             <td>
-                <i class="btn fas fa-trash btn-danger" onClick="deleteProject(\'${project.idProject}\');"></i>
+                <i class="btn fas fa-trash btn-danger" onClick="deleteProject(${project.idProject});"></i>
+            </td>
+        `;
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por retornar um template html de  |
+     * |um determinado item da tabela, correspondente a uma  |
+     * |variável.                                            |
+     * =======================================================
+     */
+    function templateListVariable(variable, idProject) {
+        return `
+            <td>${variable.idVariable}</td>
+            <td>${variable.variableName}</td>
+            <td>${variable.idExhibition}</td>
+            <td>
+                <i class="btn fas fa-trash btn-danger" onClick="deleteVariable(${idProject}, ${variable.idVariable});"></i>
             </td>
         `;
     }
