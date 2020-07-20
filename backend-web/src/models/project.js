@@ -12,18 +12,6 @@ model.prototype.insertProject = function (project) {
 }
 /*============================================================================*/
 
-/*========================INSERT PROJECT VARIABLES============================*/
-/**
- * ================================================================
- * |Model insertProjectVariables responsável por cadastrar as     |
- * |variáveis de um projeto no banco de dados.                    |
- * ================================================================
- */
-model.prototype.insertProjectVariable = function (variable) {
-    return this._connection("variable").insert(variable);
-}
-/*============================================================================*/
-
 /*==============================SELECT PROJECT================================*/
 /**
  * ================================================================

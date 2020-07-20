@@ -2,7 +2,7 @@
 const { check, validationResult } = require('express-validator'); /*Modulo responsável por fazer a validação dos dados que chegam nas requisições.*/
 /*============================================================================*/
 
-/*================================USER ROUTES=================================*/
+/*===============================PROJECT ROUTES===============================*/
 module.exports = function (app) {
 
 /*===============================CREATE PROJECT===============================*/
@@ -61,44 +61,6 @@ module.exports = function (app) {
     });
 /*============================================================================*/
 
-/*==========================CREATE PROJECT VARIABLE===========================*/
-    /** 
-     * =======================================================================
-     * |Route createProjectVariable responsável por verificar se o usuário   |
-     * |possuí sessão aberta para acessar essa rota.                         |
-     * |Caso as condições sejam verdadeiras, verifica se os dados enviados   |
-     * |são validos, e realiza o cadastro das variáveis do projeto,          |
-     * |caso contrario, retorna erro.                                        |
-     * =======================================================================
-    */
-    app.post('/createProjectVariable', 
-    [
-        check('variableName', 'Nome de variável inválido!'        ).not().isEmpty().escape().isString().isLength({ max: 127 }),
-        check('idExhibition', 'Modo de exibição inválido!'        ).not().isEmpty().escape().isInt(),
-        check('idProject'   , 'Identificador do Projeto inválido!').not().isEmpty().escape().isInt(),
-    ], 
-    function (req, res) {
-        /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.idUser !== undefined) {
-            /*Chamada da função que valida os dados da requisição.*/
-            const errors = validationResult(req)
-            /*Verificação se os parâmetros apresentam inconsistências.*/            
-            if (!errors.isEmpty()) {
-                /*Envio da respostas.*/
-                return res.status(400).send({status: "error", msg: errors.array()});
-            }
-            else {
-                /*Chamada do controller parar realizar a inserção da nova variável do projeto.*/
-                app.src.controllers.project.createProjectVariable(app, req, res);
-            }
-        }
-        else {
-            /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
-        }
-    });
-/*============================================================================*/
-
 /*=================================LIST PROJECT===============================*/
     /** 
      * =======================================================================
@@ -134,7 +96,7 @@ module.exports = function (app) {
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
         if (req.session.idUser !== undefined) {
             /*Chamada da função que valida os dados da requisição.*/
-            const errors = validationResult(req)
+            const errors = validationResult(req);
             /*Verificação se os parâmetros apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
                 /*Envio da resposta.*/
@@ -243,7 +205,6 @@ module.exports = function (app) {
         }
     });
 /*============================================================================*/
-
 
 };
 /*============================================================================*/

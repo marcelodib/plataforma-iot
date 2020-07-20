@@ -29,40 +29,6 @@ module.exports.createProject = async function (app, req, res) {
 }
 /*============================================================================*/
 
-/*==========================CREATE PROJECT VARIABLE===========================*/
-/**
- * ================================================================
- * |Controller createProjectVariable responsável por cadastrar uma|
- * |nova variável em um determinado projeto.                      |
- * ================================================================
- */
-module.exports.createProjectVariable = async function (app, req, res) {
-    try {
-		/*Atribuição dos dados enviados na requisição.*/
-        const variable = req.body;
-
-		/*Chamada do service que realiza a busca pelo projeto requisitado.*/
-        const project = await app.src.services.project.selectProject(app, [variable.idProject], req.session.idUser);
-
-		/*Verificação se o projeto requisitado foi encontrado.*/
-        if (!Array.isArray(project) || project.length === 0) {
-			/*Envio da resposta.*/
-			return res.status(400).send({status: "error", msg: "Ocorreu um erro ao cadastrar a variável, nenhum projeto foi encontrado!"});
-		}
-		
-		/*Chamada do service que realiza o cadastro de variáveis do projeto.*/
-		await app.src.services.project.insertProjectVariable(app, [variable]);
-		/*Envio da resposta.*/
-		return res.status(200).send({status: "success", msg: "Variável criada com sucesso!"});
-	} catch (error) {
-		/*Chamada do tratador de erros.*/
-		app.src.utils.error.errorHandler.errorHandler(error, "createProjectVariable");
-		/*Envio da resposta.*/
-		return res.status(400).send({status: "error", msg: "Ocorreu um erro ao inserir a variável!"});
-	}
-}
-/*============================================================================*/
-
 /*================================LIST PROJECT================================*/
 /**
  * ================================================================
@@ -101,7 +67,7 @@ module.exports.deleteProject = async function (app, req, res) {
 		/*Atribuição dos dados enviados na requisição.*/
         const idProject = req.body.idProject;
 
-		/*Chamada do service que realiza a remoção projetos.*/
+		/*Chamada do service que realiza a remoção de projetos.*/
         await app.src.services.project.deleteProject(app ,idProject, req.session.idUser);
 
 		/*Envio da resposta.*/
