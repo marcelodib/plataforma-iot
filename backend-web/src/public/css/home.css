@@ -210,3 +210,7 @@ a img {
     margin: 0 auto !important;
     width: 100% !important;
 }
+
+.chartdiv {
+    height: 200%;
+}
