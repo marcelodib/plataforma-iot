@@ -421,8 +421,8 @@
      * |dashboard.                                           |
      * =======================================================
      */
-    function openDashboard(idProject) {
-        window.open("/dashboard?idProject=" + idProject);
+    function openDashboard(idProject, projectName) {
+        window.location.href = `/dashboard?idProject=${idProject}&projectName=${projectName}`;
     }
 /*============================================================================*/
 
@@ -451,7 +451,7 @@
     function templateListProject(project) { 
         return `
             <td>
-                <i class="btn fas fa-chart-line btn-primary" onClick="openDashboard(${project.idProject});" style="background-color: #33DDFF; border-color: #33DDFF;"></i>
+                <i class="btn fas fa-chart-line btn-primary" onClick="openDashboard(${project.idProject}, \'${project.projectName}\');" style="background-color: #33DDFF; border-color: #33DDFF;"></i>
             </td>
             <td>
                 <i class="btn fas fa-plus-circle btn-primary" onClick="setIdProject(${project.idProject});" style="background-color: #33DDFF; border-color: #33DDFF;" data-toggle="modal" data-target="#exampleModalCenter"></i>
