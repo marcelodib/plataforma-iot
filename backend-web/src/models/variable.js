@@ -20,10 +20,11 @@ model.prototype.insertVariable = function (variable) {
  * ================================================================
  */
 model.prototype.selectVariable = function (idProject, idUser) {
-    return this._connection.select().from({p:"project", v:"variable"})
+    return this._connection.select().from({p:"project", v:"variable", e:"exhibition"})
     .whereRaw(`v.idProject = ${idProject}`)
     .whereRaw(`p.idUser = ${idUser}`)
-    .whereRaw("p.idProject = v.idProject");
+    .whereRaw("p.idProject = v.idProject")
+    .whereRaw("v.idExhibition = e.idExhibition");
 }
 /*============================================================================*/
 
