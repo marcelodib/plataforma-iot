@@ -56,7 +56,7 @@ CREATE TABLE variable (
 -- ============================================================== --
 -- =================Criação da tabela de medidas================= --
 -- ============================================================== --
-CREATE TABLE measures (
+CREATE TABLE measure (
     idMeasure  INT AUTO_INCREMENT PRIMARY KEY,
     idVariable INT      NOT NULL,
     value      FLOAT    NOT NULL,
