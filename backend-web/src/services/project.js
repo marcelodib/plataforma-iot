@@ -54,4 +54,22 @@ module.exports.deleteProject = async function (app, idProject, idUser) {
 }
 /*================================================================================*/
 
+/*===========================SELECT PROJECT MEASURE===============================*/
+module.exports.selectProjectMeasure = async function (app, search, idUser) {
+    /*Requisitando a conexão com o banco de dados.*/
+    const connection = app.config.database();
+    const model = new app.src.models.project(connection);
+    
+    /*Chamando o model responsável pela busca das medidas do projeto.*/
+    const result = await model.selectProjectMeasure(search, idUser);
+    
+    /*Verificação do resultado.*/
+    if (result) {
+        return result;
+    } else {
+        throw {type: "Database error", model: "selectProjectMeasure", error: result};
+    }
+}
+/*================================================================================*/
+
 /*================================================================================*/

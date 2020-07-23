@@ -81,5 +81,31 @@ module.exports.deleteProject = async function (app, req, res) {
 }
 /*============================================================================*/
 
+/*================================DATA PROJECT================================*/
+/**
+ * ================================================================
+ * |Controller listProjectMeasure responsável por buscar as       |
+ * |medidas de determinado projeto em um periodo de tempo.        |
+ * ================================================================
+ */
+module.exports.listProjectMeasure = async function (app, req, res) {
+    try {
+		/*Atribuição dos dados enviados na requisição.*/
+        const search = req.body;
+
+		/*Chamada do service que realiza a remoção de projetos.*/
+		const measure = await app.src.services.project.selectProjectMeasure(app ,search, req.session.idUser);
+
+		/*Envio da resposta.*/
+		return res.status(200).send({status: "success", data: measure});
+	} catch (error) {
+		/*Chamada do tratador de erros.*/
+		app.src.utils.error.errorHandler.errorHandler(error, "listProjectMeasure");
+		/*Envio da resposta.*/
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao buscar as medidas do projeto!"});
+	}
+}
+/*============================================================================*/
+
 /*============================================================================*/
 

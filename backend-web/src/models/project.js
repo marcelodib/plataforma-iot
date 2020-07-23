@@ -40,6 +40,26 @@ model.prototype.deleteProject = function (idProject, idUser) {
 }
 /*============================================================================*/
 
+/*==============================DELETE PROJECT================================*/
+/**
+ * ================================================================
+ * |Model selectProjectMeasure responsável por buscar as medidas  |
+ * |de um determinado projeto em um intervalo de tempo no         |
+ * |banco de dados.                                               |
+ * ================================================================
+ */
+model.prototype.selectProjectMeasure = function (search, idUser) {
+    return this._connection.select().from({p:"project", v:"variable", m:"measure"})
+    .whereRaw("v.idVariable = m.idVariable")
+    .whereRaw("p.idProject = v.idProject")
+    .whereRaw(`p.idProject = ${search.idProject}`)
+    .whereRaw(`p.idUser = ${idUser}`)
+    .whereRaw(`m.dateTime > \'${search.startDate} 00:00:00\'`)
+    .whereRaw(`m.dateTime < \'${search.endDate} 23:59:59\'`)
+    .orderBy("m.dateTime");
+}
+/*============================================================================*/
+
 /*===============================FUNCTION MODEL===============================*/
 /**
  * ================================================================

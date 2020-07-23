@@ -171,14 +171,14 @@ module.exports = function (app) {
 /*================================DATA PROJECT================================*/
     /** 
      * ==========================================================================
-     * |Route dataProject responsável por verificar se o usuário possuí         |
+     * |Route listProjectMeasure responsável por verificar se o usuário possuí  |
      * |sessão aberta para acessar essa rota.                                   |
      * |Caso as condições sejam verdadeiras, verifica se os dados enviados      |
      * |são validos, e busca as medidas do projeto no banco de dados,           |
      * |caso contrario, retorna o erro.                                         |
      * ==========================================================================
     */
-    app.post('/dataProject', 
+    app.post('/listProjectMeasure', 
     [
         check('idProject', 'Identificador do Projeto Inválido!').not().isEmpty().escape().isInt(),
         check('startDate', 'Data de início Inválida!'          ).not().isEmpty().escape().isISO8601(),
@@ -196,7 +196,7 @@ module.exports = function (app) {
             }
             else {
                 /*Chamada do controller para buscar medidas de um determinado projeto.*/
-                app.src.controllers.project.dataProject(app, req, res);
+                app.src.controllers.project.listProjectMeasure(app, req, res);
             }
         }
         else {
