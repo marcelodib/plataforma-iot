@@ -10,7 +10,7 @@
     <div class="divCenterForm">
         <h3 id="pageTitle">Dashboard &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
         <br>
-        <form class="form-inline" action="javascript:createProject()" method="POST">
+        <form class="form-inline" action="javascript:listProjectMeasure()" method="POST">
         
             <!-- input  -->
             <div class="form-group mb-2">
@@ -162,6 +162,99 @@
 
 /*============================================================================*/
     /**
+     * ========================================================
+     * |Função responsável por buscar todas as variáveis do   |
+     * |projeto selecionado.                                  |
+     * ========================================================
+     */
+    function listProjectMeasure () {
+
+        const search = { 
+            idProject: idProject,
+            startDate: document.getElementById("startDate").value,
+            endDate: document.getElementById("endDate").value
+        };
+
+        /*Varificação se o idProject é válido.*/
+        if (search.idProject === undefined || search.idProject === null || isNaN(search.idProject) || search.idProject === 0) {
+            return alert("Identificador do projeto inválido!");
+        }
+
+        /*Varificação se a data inicial é válida.*/
+        if (search.startDate === undefined || search.startDate === null || search.startDate === "") {
+            return alert("Data inicial inválida!");
+        }
+
+        /*Varificação se a data final é válida.*/
+        if (search.endDate === undefined || search.endDate === null || search.endDate === "") {
+            return alert("Data final inválida!");
+        }
+
+        if (new Date(search.startDate) > new Date(search.endDate)) {
+            return alert("A data final deve ser maior ou igual a data inicial!");
+        }
+
+        console.log(search);
+
+        /*Chamada axios para a rota listProjectMeasure para buscar as medidas do projeto selecionado.*/
+        axios.post("/listProjectMeasure", search)
+        .then((response) => {
+            /* Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status === "success") {
+                /*Atribuição das variáveis enviadas.*/
+                const measures = response.data.data;
+
+                /*Variável auxiliar para guardar todos os charts que precisam ser criados.*/
+                const chartMeasures = {};
+
+                /*Loop responsável por renderizar o modo de exibição de cada variável.*/
+                measures.forEach(element => {
+                    if (element.idExhibition === 1) {
+                        if (Array.isArray(chartMeasures[`variable${element.idVariable}`])) {
+                            chartMeasures[`variable-${element.idVariable}/${element.variableName}`].push({date: element.dateTime, value: element.value});
+                        } else {
+                            chartMeasures[`variable-${element.idVariable}/${element.variableName}`] = [{date: element.dateTime, value: element.value}];
+                        }
+                    }
+                    if (element.idExhibition === 2) {
+                        document.getElementById(`variable-${element.idVariable}`).innerHTML += templateListMeasure(element);
+                    }
+                    if (element.idExhibition === 3) {
+                        document.getElementById(`variable-${element.idVariable}`).innerHTML = element.value;
+                    }
+                });
+
+                const chartKeys = Object.keys(chartMeasures);
+
+                /*Loop responsável por renderizar as variáveis que utilizam gráfico.*/
+                chartKeys.forEach(element => {
+                    const idVariable = element.split("/")[0];
+                    const variableName = element.split("/")[1];
+                    createChartTemp(chartMeasures[idVariable], element.variableName, idVariable);
+                });
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            const errorMsg = error.response.data.msg;
+
+            let msg = "";
+
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(errorMsg)) {
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in errorMsg) {
+                    msg += errorMsg[i].msg + "\n";
+                }
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            alert(msg);
+        });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
      * =======================================================
      * |Função responsável por retornar um template html de  |
      * |um card para exibição de dados de uma variável.      |
@@ -170,8 +263,8 @@
     function templateCard(variable, idProject) {
         return `
             <div class="col">
-                <div class="card">
-                    <div class="card-body" style="width:15rem">
+                <div class="card" style="width:200px">
+                    <div class="card-body">
                         <h5 class="card-title text-secondary">${variable.variableName}</h5>
                         <h1 id="variable-${variable.idVariable}" class="text-secondary"></h1>
                     </div>
