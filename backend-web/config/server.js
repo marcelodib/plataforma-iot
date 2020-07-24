@@ -6,6 +6,7 @@ const bodyParser     = require('body-parser');                     /*Módulo res
 const expressSession = require('express-session');                 /*Módulo responsável por criar sessões de acesso.*/
 const SQLiteStore    = require('connect-sqlite3')(expressSession); /*Módulo responsável por salvar as sessões em arquivo.*/
 const dotenv         = require('dotenv');						   /*Módulo responsável por realizar a leitura das variáveis de ambiente.*/
+const path           = require("path");
 /*============================================================================*/
 
 /*===============================SERVER CONFIG================================*/
@@ -14,6 +15,8 @@ dotenv.config();
 
 /*Chamada da função que inicializa o módulo express na variável app.*/
 let app = express();
+
+app.use(express.static(path.dirname(require.resolve("mosca")) + "/public"))
 
 /*Chamada da função que inicializa a engine de visualização com o módulo ejs.*/
 app.set('view engine', 'ejs');
