@@ -9,7 +9,11 @@ const {insertMeasure} = require('./src/controllers/measure');
 dotenv.config();
 
 const settings = {
-    port: process.env.PORT_SERVER,
+    http: {
+        port: parseInt(process.env.PORT_SERVER),
+        bundle: true,
+        static: './'
+    }
 };
 
 const server = new mosca.Server(settings);
