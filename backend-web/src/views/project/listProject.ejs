@@ -210,7 +210,9 @@
                 for (const i in errorMsg) {
                     msg += errorMsg[i].msg + "\n";
                 }
-            } 
+            } else {
+                msg = errorMsg
+            }
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
             alert(msg);
         });
@@ -264,7 +266,9 @@
                 for (const i in errorMsg) {
                     msg += errorMsg[i].msg + "\n";
                 }
-            } 
+            } else {
+                msg = errorMsg
+            }
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
             alert(msg);
         });
@@ -329,7 +333,9 @@
                 for (const i in errorMsg) {
                     msg += errorMsg[i].msg + "\n";
                 }
-            } 
+            } else {
+                msg = errorMsg
+            }
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
             alert(msg);
         });
@@ -367,7 +373,9 @@
                     for (const i in errorMsg) {
                         msg += errorMsg[i].msg + "\n";
                     }
-                } 
+                } else {
+                    msg = errorMsg
+                }
                 /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
                 alert(msg);
             });
@@ -406,7 +414,9 @@
                     for (const i in errorMsg) {
                         msg += errorMsg[i].msg + "\n";
                     }
-                } 
+                } else {
+                    msg = errorMsg
+                }
                 /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
                 alert(msg);
             });

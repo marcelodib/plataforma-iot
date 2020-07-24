@@ -25,7 +25,7 @@
             </div>
 
             <button class="btn btn-primary btnLeft mb-2" type="submit" style="height: 50%;">Buscar</button>
-            <button class="btn btn-warning text-white mb-2 mx-sm-3" type="button">Live</button>
+            <button class="btn btn-warning text-white mb-2 mx-sm-3" type="button" onclick="liveMode();">Live</button>
         </form>
 
         <br>
@@ -65,6 +65,7 @@
 
 <script>
     let idProject = 0;
+    let project
 /*============================================================================*/
     /**
      * =======================================================
@@ -153,7 +154,9 @@
                 for (const i in errorMsg) {
                     msg += errorMsg[i].msg + "\n";
                 }
-            } 
+            } else {
+                msg = errorMsg
+            }
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
             alert(msg);
         });
@@ -246,7 +249,9 @@
                 for (const i in errorMsg) {
                     msg += errorMsg[i].msg + "\n";
                 }
-            } 
+            } else {
+                msg = errorMsg
+            }
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
             alert(msg);
         });
