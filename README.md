@@ -1,6 +1,6 @@
 # Plataforma IoT
 
-Essa plataforma está sendo desenvolvida com o intuito de ajudar pessoas que trabalham ou desejam trabalhar com IoT.
+Essa plataforma está sendo desenvolvida com o intuito de ajudar pessoas que trabalham ou desejam trabalhar com IoT. Dessa forma, provendo uma interface de fácil utilização para criação de projetos, atribuições de variáveis, envio de dados através dos seus dispositivos, e visualização em tempo real dessas informações através de gráficos, tabelas, e cards.
 
 # Ferramentas
 - Frontend web (HTML / CSS / JS).
