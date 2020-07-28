@@ -37,7 +37,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -70,7 +70,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso negado!"});
         }
     });
 /*============================================================================*/
@@ -106,7 +106,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/

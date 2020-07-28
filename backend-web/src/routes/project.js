@@ -56,7 +56,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -109,7 +109,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da respostas.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -141,7 +141,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -201,7 +201,7 @@ module.exports = function (app) {
         }
         else {
             /*Envio da resposta.*/
-            return res.status(400).send({status: "error", msg: "Acesso Negado!"});
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
