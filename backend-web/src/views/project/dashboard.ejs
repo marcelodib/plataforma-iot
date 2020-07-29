@@ -1,6 +1,7 @@
 <%include ../common/header.ejs%>
 
 <link rel="stylesheet" type="text/css" href="css/customForm.css">
+<script src="/mqtt.js"></script>
 
 <!-- CONTENT -->
 <div class="container">
@@ -11,22 +12,41 @@
         <h3 id="pageTitle">Dashboard &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
         <br>
         <form class="form-inline" action="javascript:listProjectMeasure()" method="POST">
-        
-            <!-- input  -->
-            <div class="form-group mb-2">
-                <label> Data de Inicio&nbsp;&nbsp;</label>
-                <input type="date" name="startDate" id="startDate" class="form-control" required>
-            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <!-- input  -->
+                    <div class="form-group">
+                        <label> Data de Inicio&nbsp;&nbsp;</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <!-- input  -->
+                    <div class="form-group">
+                        <label> Data de Fim&nbsp;&nbsp;</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" required>
+                    </div>
+                </div>
 
-            <!-- input  -->
-            <div class="form-group mb-2 mx-sm-3">
-                <label> Data de Fim&nbsp;&nbsp;</label>
-                <input type="date" name="endDate" id="endDate" class="form-control" required>
+                <div class="col">
+                    <label>&nbsp;&nbsp;</label>
+                    <button class="btn btn-primary btnLeft form-control" type="submit">Buscar</button>
+                </div>
+                
             </div>
-
-            <button class="btn btn-primary btnLeft mb-2" type="submit" style="height: 50%;">Buscar</button>
-            <button class="btn btn-warning text-white mb-2 mx-sm-3" type="button" onclick="liveMode();">Live</button>
         </form>
+
+        <br>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-warning text-white form-control" type="button" onclick="liveMode();">Live</button>
+            </div>
+
+            <div class="col">
+                <button class="btn btn-primary text-white form-control" type="button" onclick="sendCommand();">Enviar Comando</button>
+            </div>
+        </div>
 
         <br>
         <br>
@@ -82,6 +102,9 @@
         /*Chamada da função que adiciona o titulo da side bar.*/
         setSideBarTitle("Dashboard", "fa-chart-line");
 
+        document.getElementById('startDate').valueAsDate = new Date();
+        document.getElementById('endDate').valueAsDate = new Date();
+
         am4core.ready(() => {
             listVariable(idProject);
         });
@@ -92,6 +115,27 @@
             $('#sidebar').toggleClass('active');
         });
     });
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por ativar o modo live, dessa forma|
+     * |se inscrevendo no tópico para receber novas medidas.  |
+     * ========================================================
+     */
+    function liveMode() {
+        const client = mqtt.connect("ws://127.0.0.1:1884");
+
+        client.subscribe("post-data");
+
+        client.on("message", function(topic, payload) {
+            alert([topic, payload].join(": "));
+            client.end();
+        });
+
+        client.publish("send-command", "hello world!");
+    }
 /*============================================================================*/
 
 /*============================================================================*/
@@ -197,43 +241,45 @@
             return alert("A data final deve ser maior ou igual a data inicial!");
         }
 
-        console.log(search);
-
         /*Chamada axios para a rota listProjectMeasure para buscar as medidas do projeto selecionado.*/
         axios.post("/listProjectMeasure", search)
         .then((response) => {
             /* Tratamento do retorno.*/
             if (response.status === 200 && response.data.status === "success") {
-                /*Atribuição das variáveis enviadas.*/
+                /*Atribuição das medidas enviadas.*/
                 const measures = response.data.data;
 
-                /*Variável auxiliar para guardar todos os charts que precisam ser criados.*/
+                /*Variável auxiliar para guardar todos as medidas dos charts.*/
                 const chartMeasures = {};
 
-                /*Loop responsável por renderizar o modo de exibição de cada variável.*/
+                /*Loop responsável por renderizar os dados nos seus respectivos modos de exibição.*/
                 measures.forEach(element => {
+                    /*Exibição como gráfico.*/
                     if (element.idExhibition === 1) {
-                        if (Array.isArray(chartMeasures[`variable${element.idVariable}`])) {
-                            chartMeasures[`variable-${element.idVariable}/${element.variableName}`].push({date: element.dateTime, value: element.value});
+                        if (Array.isArray(chartMeasures[`variable-${element.idVariable}/${element.variableName}`])) {
+                            chartMeasures[`variable-${element.idVariable}/${element.variableName}`].push({date: new Date(element.dateTime), value: element.value});
                         } else {
-                            chartMeasures[`variable-${element.idVariable}/${element.variableName}`] = [{date: element.dateTime, value: element.value}];
+                            chartMeasures[`variable-${element.idVariable}/${element.variableName}`] = [{date: new Date(element.dateTime), value: element.value}];
                         }
                     }
+                    /*Exibição como tabela.*/
                     if (element.idExhibition === 2) {
                         document.getElementById(`variable-${element.idVariable}`).innerHTML += templateListMeasure(element);
                     }
+                    /*Exibição como card.*/
                     if (element.idExhibition === 3) {
                         document.getElementById(`variable-${element.idVariable}`).innerHTML = element.value;
                     }
                 });
 
+                /*Atribuição de todas as chaves criadas para as medidas de gráficos.*/
                 const chartKeys = Object.keys(chartMeasures);
 
-                /*Loop responsável por renderizar as variáveis que utilizam gráfico.*/
+                /*Loop responsável por renderizar as medidas que utilizam gráfico.*/
                 chartKeys.forEach(element => {
                     const idVariable = element.split("/")[0];
                     const variableName = element.split("/")[1];
-                    createChartTemp(chartMeasures[idVariable], element.variableName, idVariable);
+                    createChartTemp(chartMeasures[element], variableName, idVariable);
                 });
             }
         })
@@ -268,10 +314,10 @@
     function templateCard(variable, idProject) {
         return `
             <div class="col">
-                <div class="card" style="width:200px">
+                <div class="card" style="width:200px; height:130px;">
                     <div class="card-body">
-                        <h5 class="card-title text-secondary">${variable.variableName}</h5>
-                        <h1 id="variable-${variable.idVariable}" class="text-secondary"></h1>
+                        <h5 class="card-title text-secondary text-center">${variable.variableName}</h5>
+                        <h2 id="variable-${variable.idVariable}" class="text-secondary text-center"></h2>
                     </div>
                 </div>
             </div>
@@ -332,10 +378,12 @@
      * =======================================================
      */
     function templateListMeasure(measure) {
+        const date = measure.dateTime.split("T")[0];
+        const hour = measure.dateTime.split("T")[1].split(".")[0];
         return `
             <td>${measure.idVariable}</td>
             <td>${measure.value}</td>
-            <td>${measure.dateTime}</td>
+            <td>${date} ${hour}</td>
         `;
     }
 /*============================================================================*/
