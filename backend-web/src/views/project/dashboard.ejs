@@ -40,11 +40,11 @@
         <br>
         <div class="row">
             <div class="col">
-                <button class="btn btn-warning text-white form-control" type="button" onclick="liveMode();">Live</button>
+                <button class="btn btn-warning text-white" type="button" id="liveBtn" style="width: 100%;" onclick="liveMode();">Live</button>
             </div>
 
             <div class="col">
-                <button class="btn btn-primary text-white form-control" type="button" onclick="sendCommand();">Enviar Comando</button>
+                <button class="btn btn-primary text-white" type="button" style="width: 100%;" data-toggle="modal" data-target="#exampleModalCenter">Enviar Comando</button>
             </div>
         </div>
 
@@ -68,7 +68,42 @@
     </div>
 
     <br><br>
+    <!-- Modal Send Command-->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
 
+                <div class="modal-header">
+                    <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Enviando Comando</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="javascript:sendCommand()" method="POST">
+
+                        <div class="form-group">
+                            <label><i class="fas fa-key"></i> Chave</label>
+                            <input type="text" placeholder="" name="key" id="key" class="form-control"
+                                pattern="[A-Za-z0-9]{1,127}$" maxlength="32" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-question"></i> Valor</label>
+                            <input type="text" placeholder="" name="value" id="value" class="form-control"
+                                pattern="[A-Za-zÀ-ú0-9.,\- ]{1,127}$" maxlength="127" required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="background-color: #33DDFF; border-color: #33DDFF;">Enviar</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- /CONTENT -->
 
@@ -85,7 +120,8 @@
 
 <script>
     let idProject = 0;
-    let project
+    let token = "";
+    let live = false;
 /*============================================================================*/
     /**
      * =======================================================
@@ -94,17 +130,21 @@
      * =======================================================
      */
     window.onload = () => { 
+        /*Recuperação dos parâmetros enviados pela url.*/
         const urlParams = new URLSearchParams(window.location.search);
         const projectName = urlParams.get('projectName');
         idProject = urlParams.get('idProject');
+        token = urlParams.get('token');
 
+        /*Renderização do nome do projeto ao título.*/
         document.getElementById("pageTitle").innerHTML = projectName;
         /*Chamada da função que adiciona o titulo da side bar.*/
         setSideBarTitle("Dashboard", "fa-chart-line");
 
+        /*Atribuição do dia atual como default dos inputs.*/
         document.getElementById('startDate').valueAsDate = new Date();
         document.getElementById('endDate').valueAsDate = new Date();
-
+        
         am4core.ready(() => {
             listVariable(idProject);
         });
@@ -125,16 +165,64 @@
      * ========================================================
      */
     function liveMode() {
-        const client = mqtt.connect("ws://127.0.0.1:1884");
+        /*Variável que conterá a conexão com o broker mqtt.*/
+        let client = false;
+        /*Atribuição do modo live on/off*/
+        live = !live;
+        /*Verificação se o modo live esta ativo.*/
+        if (live) {
+            document.getElementById("liveBtn").innerHTML = "Stop Live"
+            /*Chamada da função que abre conexão com o broker mqtt.*/
+            client = mqtt.connect("ws://127.0.0.1:1883");
 
-        client.subscribe("post-data");
+            /*Chamada da função que realiza a inscrição no tópico.*/
+            client.subscribe(`post-data${token}`);
 
-        client.on("message", function(topic, payload) {
-            alert([topic, payload].join(": "));
-            client.end();
-        });
+            /*Função que ficará ouvindo caso chegue uma mensagem no tópico.*/
+            client.on("message", function(topic, payload) {
+                console.log(topic);
+                console.log(payload);
+            });
+        } else {
+            document.getElementById("liveBtn").innerHTML = "Live"
+            /*Verificação se existe conexão com o broker mqtt.*/
+            if (client){
+                /*Chamada da função que encerra a conexão com o broker mqtt.*/
+                client.end();
+            }
+        }
+    }
+/*============================================================================*/
 
-        client.publish("send-command", "hello world!");
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por enviar um comando para o       |
+     * |dispositivo do projeto.                               |
+     * ========================================================
+     */
+    function sendCommand() {
+        /*Chamada da função que abre conexão com o broker mqtt.*/
+        const client = mqtt.connect("ws://127.0.0.1:1883");
+
+        /*Verificação se a chave é válida.*/
+        if (document.getElementById("key").value) {
+            return alert("Chave do comando inválida!");
+        }
+        /*Verificação se o valor é válido.*/
+        if (document.getElementById("value").value) {
+            return alert("Valor do comando inválida!");
+        }
+
+        /*Atribuição do objeto com a chave e valor inserido.*/
+        const command = {};
+        command[document.getElementById("key").value] = document.getElementById("value").value;
+
+        /*Chamada da função que realiza a publicação no tópico.*/
+        client.publish(`send-command/${token}`, command);
+
+        /*Chamada da função que encerra a conexão com o broker mqtt.*/
+        return client.end();
     }
 /*============================================================================*/
 
