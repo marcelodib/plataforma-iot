@@ -9,17 +9,20 @@ Essa plataforma está sendo desenvolvida com o intuito de ajudar pessoas que tra
 - Banco de Dados (MySQL).
 
 # Funcionalidades
-- Criação de conta. | ✓ |
-- Autenticação de usuário. | ✓ |
-- Criação de projeto. | ✓ |
-- Criação de variáveis do projeto. | ✓ |
-- Listagem de projetos. | ✓ |
-- Listagem de variáveis do projeto. | ✓ |
-- Remoção de projeto. | ✓ |
-- Remoção de variável do projeto. | ✓ |
-- Dashboard do projeto customizável (Gráficos / Tabelas / Cards). | ✓ |
-- Envio de dados do dispositivo via MQTT. | ✓ |
-- Dashboard com atualização de dados em tempo real. |&nbsp;&nbsp;&nbsp;|
+| Funcionalidade | Status |
+| ------ | ------ |
+| Criação de conta | ✓ |
+| Autenticação de usuário | ✓ |
+| Criação de projeto | ✓ |
+| Criação de variáveis do projeto | ✓ |
+| Listagem de projetos | ✓ |
+| Listagem de variáveis do projeto | ✓ |
+| Remoção de projeto | ✓ |
+| Remoção de variável do projeto | ✓ |
+| Dashboard do projeto customizável (Gráficos / Tabelas / Cards) | ✓ |
+| Envio de dados do dispositivo via MQTT | ✓ |
+| Dashboard com atualização de dados em tempo real | dev |
+
 
 # Andamento do projeto
 https://trello.com/b/dRBEJNNv/plataforma-iot
