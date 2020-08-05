@@ -2,13 +2,13 @@
 
 Essa plataforma está sendo desenvolvida com o intuito de ajudar pessoas que trabalham ou desejam trabalhar com IoT. Dessa forma, provendo uma interface de fácil utilização para criação de projetos, atribuições de variáveis, envio de dados através dos seus dispositivos, e visualização em tempo real dessas informações através de gráficos, tabelas, e cards.
 
-# Ferramentas
+### Ferramentas
 - Frontend web (HTML / CSS / JS).
 - Backend web (Node JS - Express).
 - Broker MQTT (Node JS - Mosca).
 - Banco de Dados (MySQL).
 
-# Funcionalidades
+### Funcionalidades
 | Funcionalidade | Status |
 | ------ | ------ |
 | Criação de conta | ✓ |
@@ -24,5 +24,5 @@ Essa plataforma está sendo desenvolvida com o intuito de ajudar pessoas que tra
 | Dashboard com atualização de dados em tempo real | dev |
 
 
-# Andamento do projeto
+### Andamento do projeto
 https://trello.com/b/dRBEJNNv/plataforma-iot
